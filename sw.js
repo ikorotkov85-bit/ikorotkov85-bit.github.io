@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitai-v2';
+const CACHE_NAME = 'fitai-v21';
 const urlsToCache = [
     './',
     './index.html',
