@@ -16,6 +16,7 @@
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; padding: 6px; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); background-attachment: fixed; }
@@ -110,10 +111,10 @@ h1 { color: white; font-size: 1.5em; font-weight: 800; margin-bottom: 2px; }
 .api-modal-content { background: white; border-radius: 20px; padding: 24px; max-width: 420px; width: 100%; max-height: 90vh; overflow-y: auto; }
 .api-modal-title { font-size: 1.3em; font-weight: 800; color: #333; margin-bottom: 6px; }
 .api-modal-subtitle { font-size: 0.85em; color: #666; margin-bottom: 16px; }
-.api-hint { background: #e3f2fd; padding: 10px; border-radius: 10px; font-size: 0.75em; color: #1976d2; margin-bottom: 12px; line-height: 1.5; }
 .api-form-group { margin-bottom: 12px; }
 .api-form-group label { display: block; font-size: 0.8em; font-weight: 600; color: #333; margin-bottom: 4px; }
 .api-form-group input, .api-form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; font-size: 0.9em; }
+.api-hint { background: #e3f2fd; padding: 10px; border-radius: 10px; font-size: 0.75em; color: #1976d2; margin-bottom: 12px; line-height: 1.5; }
 .api-modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
 .api-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9em; font-weight: 700; cursor: pointer; }
 .api-btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
@@ -283,16 +284,6 @@ h1 { color: white; font-size: 1.5em; font-weight: 800; margin-bottom: 2px; }
 .stats-tab-label { font-size: 0.65em; font-weight: 700; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0, 0, 0, 0.8); color: white; padding: 10px 16px; border-radius: 10px; font-weight: 600; z-index: 2000; opacity: 0; font-size: 0.85em; }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.workout-proposal { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 12px; margin-top: 10px; border: 2px solid #4FC3F7; }
-.workout-proposal-title { font-size: 1em; font-weight: 800; color: #333; margin-bottom: 6px; }
-.workout-proposal-stats { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-.workout-proposal-stat { background: #f0f8ff; padding: 4px 8px; border-radius: 6px; font-size: 0.75em; color: #333; font-weight: 600; }
-.workout-proposal-exercises { font-size: 0.8em; color: #666; margin-bottom: 10px; }
-.workout-proposal-exercises li { margin-bottom: 3px; }
-.workout-proposal-buttons { display: flex; gap: 8px; }
-.workout-proposal-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 0.85em; font-weight: 700; cursor: pointer; }
-.workout-proposal-btn.accept { background: #4CAF50; color: white; }
-.workout-proposal-btn.reject { background: #f44336; color: white; }
 .workout-summary-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .workout-summary { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; color: white; text-align: center; animation: slideIn 0.3s ease; }
 .workout-summary-title { font-size: 1.3em; font-weight: 800; margin-bottom: 16px; }
@@ -372,7 +363,7 @@ body { padding: 4px; }
 <div class="profile-section">
 <div class="profile-section-title">🔗 Google Fit</div>
 <div class="profile-google-fit">
-<div id="profileGoogleFitStatus" class="profile-google-fit-status">⚪ Не подключено</div>
+<div id="profileGoogleFitStatus" class="profile-google-fit-status"> Не подключено</div>
 <button id="profileGoogleFitBtn" class="profile-google-fit-btn" onclick="syncWithGoogleFit(true)">🔐 Подключить Google Fit</button>
 <button id="profileGoogleFitDisconnect" class="profile-google-fit-disconnect" onclick="disconnectGoogleFit()">🗑️ Отключить Google Fit</button>
 </div>
@@ -394,7 +385,7 @@ body { padding: 4px; }
 </div>
 <div class="activity-grid">
 <div class="steps-column">
-<div class="circle-section-title"> Шаги</div>
+<div class="circle-section-title">👟 Шаги</div>
 <div class="steps-circle-container">
 <svg class="steps-circle" viewBox="0 0 200 200">
 <circle class="circle-bg" cx="100" cy="100" r="80"/>
@@ -467,7 +458,7 @@ body { padding: 4px; }
 <div id="nutrition-tab" class="tab-content">
 <div class="meal-section-title">🍽️ Питание</div>
 <div class="total-eaten-tile">
-<div class="total-eaten-left"><div class="total-eaten-icon">🍽️</div><div class="total-eaten-info"><div class="total-eaten-label">Всего съедено</div><div class="total-eaten-value" id="totalEatenValue">0</div></div></div>
+<div class="total-eaten-left"><div class="total-eaten-icon">️</div><div class="total-eaten-info"><div class="total-eaten-label">Всего съедено</div><div class="total-eaten-value" id="totalEatenValue">0</div></div></div>
 <div class="total-eaten-right"><div class="total-eaten-meals" id="totalEatenMeals">0 приемов</div><div class="total-eaten-bar"><div class="total-eaten-bar-fill" id="totalEatenBar" style="width: 0%"></div></div></div>
 </div>
 <div class="meal-accordion">
@@ -504,8 +495,8 @@ body { padding: 4px; }
 <div class="health-section-title">❤️ Показатели</div>
 <div class="health-grid">
 <div class="health-card" onclick="editHealth('pulse')"><div class="health-icon">💓</div><div class="health-title">Пульс</div><div class="health-value" id="healthPulse">—</div><div class="health-unit">уд/мин</div></div>
-<div class="health-card" onclick="editHealth('pressure')"><div class="health-icon"></div><div class="health-title">Давление</div><div class="health-value" id="healthPressure">—</div><div class="health-unit">мм рт.ст.</div></div>
-<div class="health-card" onclick="editHealth('weight')"><div class="health-icon">⚖️</div><div class="health-title">Вес</div><div class="health-value" id="healthWeight">—</div><div class="health-unit">кг</div></div>
+<div class="health-card" onclick="editHealth('pressure')"><div class="health-icon">🩸</div><div class="health-title">Давление</div><div class="health-value" id="healthPressure">—</div><div class="health-unit">мм рт.ст.</div></div>
+<div class="health-card" onclick="editHealth('weight')"><div class="health-icon">️</div><div class="health-title">Вес</div><div class="health-value" id="healthWeight">—</div><div class="health-unit">кг</div></div>
 <div class="health-card" onclick="editHealth('water')"><div class="health-icon">💧</div><div class="health-title">Вода</div><div class="health-value" id="healthWater">0</div><div class="health-unit">мл</div></div>
 <div class="health-card" onclick="editHealth('sleep')"><div class="health-icon">😴</div><div class="health-title">Сон</div><div class="health-value" id="healthSleep">—</div><div class="health-unit">часов</div></div>
 </div>
@@ -513,8 +504,8 @@ body { padding: 4px; }
 <div class="health-section">
 <div class="health-section-title">📊 Тело</div>
 <div class="health-metrics">
-<div class="health-metric"><div class="health-metric-icon">📏</div><div class="health-metric-title">ИМТ</div><div class="health-metric-value" id="healthBMI">—</div><div class="health-metric-status" id="healthBMIStatus">—</div></div>
-<div class="health-metric"><div class="health-metric-icon"></div><div class="health-metric-title">BMR</div><div class="health-metric-value" id="healthBMR">—</div><div class="health-metric-status" id="healthBMRStatus">ккал</div></div>
+<div class="health-metric"><div class="health-metric-icon"></div><div class="health-metric-title">ИМТ</div><div class="health-metric-value" id="healthBMI">—</div><div class="health-metric-status" id="healthBMIStatus">—</div></div>
+<div class="health-metric"><div class="health-metric-icon">🔥</div><div class="health-metric-title">BMR</div><div class="health-metric-value" id="healthBMR">—</div><div class="health-metric-status" id="healthBMRStatus">ккал</div></div>
 <div class="health-metric"><div class="health-metric-icon">⚡</div><div class="health-metric-title">TDEE</div><div class="health-metric-value" id="healthTDEE">—</div><div class="health-metric-status" id="healthTDEEStatus">ккал</div></div>
 </div>
 </div>
@@ -531,20 +522,20 @@ body { padding: 4px; }
 <div class="chart-zoom-controls">
 <button class="zoom-btn" onclick="zoomIn()">+</button>
 <button class="zoom-btn" onclick="zoomOut()">−</button>
-<button class="zoom-btn" onclick="resetZoom()" style="font-size: 0.85em;"></button>
+<button class="zoom-btn" onclick="resetZoom()" style="font-size: 0.85em;">↺</button>
 </div>
 <svg class="line-chart-svg" id="lineChartSvg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet"></svg>
 </div>
 <div class="chart-legend" id="chartLegend"></div>
 </div>
 <div class="stats-tabs">
-<div class="stats-tab active" onclick="setChartType('steps', this)"><div class="stats-tab-icon"></div><div class="stats-tab-label">Шаги</div></div>
+<div class="stats-tab active" onclick="setChartType('steps', this)"><div class="stats-tab-icon">👟</div><div class="stats-tab-label">Шаги</div></div>
 <div class="stats-tab" onclick="setChartType('distance', this)"><div class="stats-tab-icon">📍</div><div class="stats-tab-label">Расстояние</div></div>
 <div class="stats-tab" onclick="setChartType('burned', this)"><div class="stats-tab-icon">🔥</div><div class="stats-tab-label">Сожжено</div></div>
 <div class="stats-tab" onclick="setChartType('pulse', this)"><div class="stats-tab-icon">💓</div><div class="stats-tab-label">Пульс</div></div>
 <div class="stats-tab" onclick="setChartType('pressure', this)"><div class="stats-tab-icon">🩸</div><div class="stats-tab-label">Давление</div></div>
-<div class="stats-tab" onclick="setChartType('weight', this)"><div class="stats-tab-icon">️</div><div class="stats-tab-label">Вес</div></div>
-<div class="stats-tab" onclick="setChartType('water', this)"><div class="stats-tab-icon"></div><div class="stats-tab-label">Вода</div></div>
+<div class="stats-tab" onclick="setChartType('weight', this)"><div class="stats-tab-icon">⚖️</div><div class="stats-tab-label">Вес</div></div>
+<div class="stats-tab" onclick="setChartType('water', this)"><div class="stats-tab-icon">💧</div><div class="stats-tab-label">Вода</div></div>
 <div class="stats-tab" onclick="setChartType('sleep', this)"><div class="stats-tab-icon">😴</div><div class="stats-tab-label">Сон</div></div>
 </div>
 </div>
@@ -562,9 +553,9 @@ body { padding: 4px; }
 </div>
 <div class="ai-quick-actions">
 <button class="ai-quick-btn" onclick="sendQuickMessage('Проанализируй мой день')">📊 Анализ дня</button>
-<button class="ai-quick-btn" onclick="sendQuickMessage('Дай совет по питанию')">🍽️ Совет по питанию</button>
+<button class="ai-quick-btn" onclick="sendQuickMessage('Дай совет по питанию')">️ Совет по питанию</button>
 <button class="ai-quick-btn" onclick="sendQuickMessage('Предложи тренировку')">🏋️ Тренировка</button>
-<button class="ai-quick-btn" onclick="sendQuickMessage('Как улучшить прогресс?')"> Прогресс</button>
+<button class="ai-quick-btn" onclick="sendQuickMessage('Как улучшить прогресс?')">📈 Прогресс</button>
 </div>
 <div class="ai-messages" id="aiMessages">
 <div class="ai-message assistant">
@@ -598,6 +589,10 @@ body { padding: 4px; }
 </div>
 <div class="toast" id="toast"></div>
 <script>
+// Инициализация vConsole для отладки на телефоне
+var vConsole = new VConsole();
+console.log('✅ vConsole загружен! Открой зелёную кнопку справа внизу.');
+
 const GOOGLE_CLIENT_ID = '973364275484-8uhp1ipkjt420b0me6b78an1dk1dtj8c.apps.googleusercontent.com';
 const foodDatabase = [
 { name: 'Борщ', calories: 49 }, { name: 'Щи', calories: 42 }, { name: 'Пельмени', calories: 275 },
@@ -823,7 +818,7 @@ let currentMealType = 'breakfast', currentStatsPeriod = 'week', currentChartType
 let selectedFood = null, editingTile = null, editingHealth = null, currentBodyIndex = 0, selectedProvider = 'pollinations';
 let tokenClient = null, gisLoaded = false, autoSyncAttempted = false;
 let workoutTimer = null, workoutStartTime = null, workoutElapsed = 0, selectedActivity = null;
-let watchId = null, workoutRoute = [], workoutMap = null, routeLine = null, currentExerciseCount = 0, initialSteps = 0;
+let watchId = null, workoutRoute = [], workoutMap = null, routeLine = null, currentMarker = null, currentExerciseCount = 0, initialSteps = 0;
 let recognition = null, isRecording = false;
 let voiceEnabled = true;
 let movingTime = 0;
@@ -833,7 +828,6 @@ let isMoving = false;
 const MOVING_THRESHOLD = 1.0;
 let nextStepMilestone = 1000;
 let lastSpokenMilestone = 0;
-let openFoodFactsCache = {};
 function getTodayKey() { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`; }
 function getLocalDateKey(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
 function formatTodayDate() { return new Date().toLocaleDateString('ru-RU', { day:'numeric', month:'long', weekday:'long' }); }
@@ -876,7 +870,7 @@ function toggleVoiceNotifications() {
 voiceEnabled = !voiceEnabled;
 const btn = document.getElementById('voiceToggleBtn');
 if (btn) {
-btn.textContent = voiceEnabled ? ' Голос вкл' : ' Голос выкл';
+btn.textContent = voiceEnabled ? '🔊 Голос вкл' : '🔇 Голос выкл';
 btn.classList.toggle('muted', !voiceEnabled);
 }
 showToast(voiceEnabled ? '🔊 Голосовые уведомления включены' : '🔇 Голосовые уведомления выключены');
@@ -971,7 +965,7 @@ if (activity) {
 startWorkoutByCommand(activity);
 return { success: true, message: `🏃 Начата тренировка: ${activity.name}`, type: 'workout', name: activity.name };
 } else {
-return { success: false, message: `❓ Не нашёл активность "${activityName}". Доступные: бег, прогулка, велосипед, йога...` };
+return { success: false, message: ` Не нашёл активность "${activityName}". Доступные: бег, прогулка, велосипед, йога...` };
 }
 }
 if (lower.includes('сколько шагов') || lower.includes('мои шаги') || lower.match(/^шаги$/)) {
@@ -981,7 +975,7 @@ return { success: true, message: `📊 Сегодня: ${steps.toLocaleString('r
 if (lower.includes('сколько калорий') || lower.includes('сожжено') || lower.includes('калории')) {
 const burned = calculateTotalBurned();
 const eaten = getTodayCalories();
-return { success: true, message: `🔥 Сожжено: ${burned} ккал · 🍽️ Съедено: ${eaten} ккал`, type: 'stats', metric: 'calories' };
+return { success: true, message: `🔥 Сожжено: ${burned} ккал · ️ Съедено: ${eaten} ккал`, type: 'stats', metric: 'calories' };
 }
 if (lower.includes('сколько воды') || lower.includes('вода')) {
 const today = getTodayKey();
@@ -1088,7 +1082,7 @@ recognition.interimResults = true;
 recognition.onstart = function() {
 isRecording = true;
 const micBtn = document.getElementById('micBtn');
-if (micBtn) { micBtn.classList.add('recording'); micBtn.innerHTML = '⏹️'; }
+if (micBtn) { micBtn.classList.add('recording'); micBtn.innerHTML = '️'; }
 showToast('🎤 Говори...');
 };
 recognition.onresult = function(event) {
@@ -1130,9 +1124,9 @@ recognition.onerror = function(event) {
 isRecording = false;
 const micBtn = document.getElementById('micBtn');
 if (micBtn) { micBtn.classList.remove('recording'); micBtn.innerHTML = '🎤'; }
-if (event.error === 'no-speech') showToast('🔇 Речь не обнаружена');
+if (event.error === 'no-speech') showToast(' Речь не обнаружена');
 else if (event.error === 'not-allowed') showToast('⚠️ Доступ к микрофону запрещён');
-else showToast('️ Ошибка голосового ввода');
+else showToast('⚠️ Ошибка голосового ввода');
 };
 return true;
 }
@@ -1144,7 +1138,7 @@ if (!supported) { showToast('⚠️ Голосовой ввод не подде�
 if (isRecording) recognition.stop();
 else {
 try { recognition.start(); }
-catch (e) { showToast('⚠️ Не удалось запустить голосовой ввод'); }
+catch (e) { showToast('️ Не удалось запустить голосовой ввод'); }
 }
 }
 function addCommandResultToUI(result) {
@@ -1156,7 +1150,7 @@ if (result.type === 'water') icon = '💧';
 else if (result.type === 'food') icon = '🍎';
 else if (result.type === 'workout') icon = '🏃';
 else if (result.type === 'stats') icon = '📊';
-md.innerHTML = `<div class="ai-message-avatar">🤗</div><div class="ai-message-bubble"><div class="action-executed"><div class="action-executed-icon">${icon}</div><div class="action-executed-text">${result.message}</div></div></div>`;
+md.innerHTML = `<div class="ai-message-avatar"></div><div class="ai-message-bubble"><div class="action-executed"><div class="action-executed-icon">${icon}</div><div class="action-executed-text">${result.message}</div></div></div>`;
 mc.appendChild(md);
 setTimeout(() => { mc.scrollTop = mc.scrollHeight; }, 50);
 }
@@ -1220,7 +1214,7 @@ function renderWorkoutTimer() {
 const container = document.getElementById('workoutTimerContainer');
 if (workoutTimer && selectedActivity) {
 const needsGPS = selectedActivity.needsGPS;
-container.innerHTML = `<div class="workout-timer glass"><div style="font-size: 0.9em; font-weight: 700; color: white;"> <span id="selectedActivityName">${selectedActivity.name}${needsGPS ? '' : ' (без GPS)'}</span></div><div class="timer-display" id="timerDisplay">00:00:00</div><div class="workout-stats">${needsGPS ? '<div class="workout-stat"><div class="workout-stat-value" id="timerDistance">0</div><div class="workout-stat-label">км</div></div>' : ''}<div class="workout-stat"><div class="workout-stat-value" id="timerCalories">0</div><div class="workout-stat-label">ккал</div></div>${needsGPS ? '<div class="workout-stat"><div class="workout-stat-value" id="timerSpeed">0</div><div class="workout-stat-label">км/ч (движ.)</div></div>' : ''}</div><div class="timer-controls"><button class="timer-btn timer-btn-stop" onclick="stopWorkout()">⏹️ Закончить</button><button class="timer-btn timer-btn-voice ${voiceEnabled ? '' : 'muted'}" id="voiceToggleBtn" onclick="toggleVoiceNotifications()">${voiceEnabled ? '🔊 Голос вкл' : '🔇 Голос выкл'}</button></div>${needsGPS ? '<div class="map-container"><div id="workoutMap"></div></div>' : ''}</div>`;
+container.innerHTML = `<div class="workout-timer glass"><div style="font-size: 0.9em; font-weight: 700; color: white;"> <span id="selectedActivityName">${selectedActivity.name}${needsGPS ? '' : ' (без GPS)'}</span></div><div class="timer-display" id="timerDisplay">00:00:00</div><div class="workout-stats">${needsGPS ? '<div class="workout-stat"><div class="workout-stat-value" id="timerDistance">0</div><div class="workout-stat-label">км</div></div>' : ''}<div class="workout-stat"><div class="workout-stat-value" id="timerCalories">0</div><div class="workout-stat-label">ккал</div></div>${needsGPS ? '<div class="workout-stat"><div class="workout-stat-value" id="timerSpeed">0</div><div class="workout-stat-label">км/ч (движ.)</div></div>' : ''}</div><div class="timer-controls"><button class="timer-btn timer-btn-stop" onclick="stopWorkout()">⏹️ Закончить</button><button class="timer-btn timer-btn-voice ${voiceEnabled ? '' : 'muted'}" id="voiceToggleBtn" onclick="toggleVoiceNotifications()">${voiceEnabled ? '🔊 Голос вкл' : ' Голос выкл'}</button></div>${needsGPS ? '<div class="map-container"><div id="workoutMap"></div></div>' : ''}</div>`;
 document.getElementById('startWorkoutBtn').style.display = 'none';
 } else {
 container.innerHTML = '';
@@ -1233,7 +1227,7 @@ if (container.innerHTML.trim() !== '') { container.innerHTML = ''; return; }
 let html = '<div class="activity-selector">';
 for (const [category, activities] of Object.entries(activitiesDatabase)) {
 html += `<div class="activity-category"><div class="activity-category-title">${category}</div><div class="activity-buttons">`;
-activities.forEach(a => { html += `<button class="activity-btn" onclick="selectActivity('${a.name}', ${a.caloriesPerHour}, ${a.needsGPS})">${a.needsGPS ? '📍' : ''} ${a.name}</button>`; });
+activities.forEach(a => { html += `<button class="activity-btn" onclick="selectActivity('${a.name}', ${a.caloriesPerHour}, ${a.needsGPS})">${a.needsGPS ? '📍' : '🏠'} ${a.name}</button>`; });
 html += `</div></div>`;
 }
 container.innerHTML = html + '</div>';
@@ -1244,7 +1238,7 @@ document.getElementById('activitySelectorContainer').innerHTML = '';
 startWorkout();
 }
 function startWorkout() {
-if (!selectedActivity) { showToast('⚠️ Выбери активность'); return; }
+if (!selectedActivity) { showToast('️ Выбери активность'); return; }
 workoutStartTime = Date.now();
 workoutElapsed = 0;
 workoutRoute = [];
@@ -1365,19 +1359,19 @@ currentExerciseCount++;
 const div = document.createElement('div');
 div.className = 'exercise-form-item';
 div.id = `exercise-form-${currentExerciseCount}`;
-div.innerHTML = `<input type="text" placeholder="Название" class="ex-name"><input type="text" placeholder="Подходы" class="ex-sets"><input type="text" placeholder="Повторы" class="ex-reps"><input type="text" placeholder="Вес" class="ex-weight"><button class="remove-exercise-btn" onclick="removeExerciseFromForm(${currentExerciseCount})"></button>`;
+div.innerHTML = `<input type="text" placeholder="Название" class="ex-name"><input type="text" placeholder="Подходы" class="ex-sets"><input type="text" placeholder="Повторы" class="ex-reps"><input type="text" placeholder="Вес" class="ex-weight"><button class="remove-exercise-btn" onclick="removeExerciseFromForm(${currentExerciseCount})">✕</button>`;
 document.getElementById('exercisesList').appendChild(div);
 }
 function removeExerciseFromForm(id) { const el = document.getElementById(`exercise-form-${id}`); if(el) el.remove(); }
 function saveCustomWorkout() {
 const name = document.getElementById('workoutNameInput').value.trim();
-if(!name) { showToast('️ Введи название'); return; }
+if(!name) { showToast('⚠️ Введи название'); return; }
 const exercises = [];
 document.querySelectorAll('.exercise-form-item').forEach(item => {
 const exName = item.querySelector('.ex-name').value.trim();
 if(exName) exercises.push({ name: exName, sets: item.querySelector('.ex-sets').value || '-', reps: item.querySelector('.ex-reps').value || '-', weight: item.querySelector('.ex-weight').value || '-' });
 });
-if(exercises.length === 0) { showToast('⚠️ Добавь упражнение'); return; }
+if(exercises.length === 0) { showToast('️ Добавь упражнение'); return; }
 workoutTemplates.push({ id: Date.now(), name, exercises, createdAt: new Date().toISOString() });
 saveData();
 document.getElementById('workoutNameInput').value = '';
@@ -1392,7 +1386,7 @@ const list = document.getElementById('workoutTemplatesList');
 if(workoutTemplates.length === 0) { list.innerHTML = '<div class="empty-state">Нет сохранённых тренировок</div>'; return; }
 list.innerHTML = workoutTemplates.map(t => {
 const exHtml = t.exercises.map(e => `<li>${e.name} — ${e.sets}×${e.reps}${e.weight && e.weight !== '-' ? ' @ ' + e.weight + 'кг' : ''}</li>`).join('');
-return `<div class="workout-template-card"><div class="workout-template-header"><div class="workout-template-name">${t.name}</div><div class="workout-template-actions"><button class="workout-template-btn execute" onclick="executeWorkout(${t.id})">▶️</button><button class="workout-template-btn delete" onclick="deleteWorkoutTemplate(${t.id})">️</button></div></div><ul class="workout-template-exercises">${exHtml}</ul></div>`;
+return `<div class="workout-template-card"><div class="workout-template-header"><div class="workout-template-name">${t.name}</div><div class="workout-template-actions"><button class="workout-template-btn execute" onclick="executeWorkout(${t.id})">▶️</button><button class="workout-template-btn delete" onclick="deleteWorkoutTemplate(${t.id})">🗑️</button></div></div><ul class="workout-template-exercises">${exHtml}</ul></div>`;
 }).join('');
 }
 function executeWorkout(templateId) {
@@ -1407,7 +1401,7 @@ showToast(`✅ "${template.name}" выполнена! +${calories} ккал`);
 function deleteWorkoutTemplate(id) {
 if(!confirm('Удалить?')) return;
 workoutTemplates = workoutTemplates.filter(t => t.id !== id);
-saveData(); renderWorkoutTemplates(); showToast('🗑️ Удалено');
+saveData(); renderWorkoutTemplates(); showToast('️ Удалено');
 }
 function renderWorkoutHistory() {
 const list = document.getElementById('workoutHistoryList');
@@ -1424,159 +1418,229 @@ const details = [duration, distance, speed, steps].filter(d => d).join(' · ');
 return `<div class="workout-history-item"><div class="workout-history-info"><div class="workout-history-name">${w.name}</div><div class="workout-history-date">${time} · ${details}</div></div><div class="workout-history-stats">🔥 ${w.calories || 0} ккал</div></div>`;
 }).join('');
 }
+
+// ========== ИСПРАВЛЕННЫЙ GOOGLE FIT С ПОДРОБНЫМИ ЛОГАМИ ==========
 function initGoogleFit() {
+console.log('🔵 Инициализация Google Fit...');
+console.log('GOOGLE_CLIENT_ID:', GOOGLE_CLIENT_ID);
+
 gapi.load('client', async () => {
 try {
-await gapi.client.init({ discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest'] });
-console.log('✅ Google Fit API загружен');
+console.log(' Загрузка gapi.client...');
+await gapi.client.init({ 
+discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest'] 
+});
+console.log('✅ Google Fit API загружен успешно');
+
 if (!autoSyncAttempted) {
 autoSyncAttempted = true;
+console.log('⏳ Запуск авто-синхронизации через 1.5 сек...');
 setTimeout(() => tryAutoSync(), 1500);
 }
 } catch (error) {
-console.error(' Ошибка загрузки Google Fit API:', error);
+console.error('❌ Ошибка загрузки Google Fit API:', error);
 const status = document.getElementById('googleFitStatus');
-if (status) status.textContent = '⚠️ Ошибка загрузки API';
+if (status) status.textContent = '⚠️ Ошибка загрузки API: ' + error.message;
 }
 });
+
+try {
 tokenClient = google.accounts.oauth2.initTokenClient({
 client_id: GOOGLE_CLIENT_ID,
 scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.location.read',
 callback: (response) => {
+console.log('🔑 Callback токена:', response);
 if (response.error) {
-console.error('❌ Ошибка авторизации Google Fit:', response);
+console.error(' Ошибка авторизации:', response);
 handleGoogleFitTokenError();
 return;
 }
-console.log('✅ Получен токен Google Fit');
+console.log('✅ Токен получен, запрашиваем шаги...');
 fetchStepsFromGoogleFit(response.access_token);
 }
 });
-gisLoaded = true;
-console.log('✅ Google Fit инициализирован');
+console.log('✅ TokenClient инициализирован');
+} catch (error) {
+console.error('❌ Ошибка инициализации tokenClient:', error);
 }
+
+gisLoaded = true;
+console.log('✅ Google Fit полностью инициализирован');
+}
+
 function tryAutoSync() {
+console.log('🔄 tryAutoSync вызван');
+console.log('gisLoaded:', gisLoaded);
+console.log('autoSyncAttempted:', autoSyncAttempted);
+
 if (!gisLoaded) {
-console.log(' GIS ещё не загружен, ждём...');
+console.log('⏳ GIS ещё не загружен, ждём...');
 setTimeout(tryAutoSync, 1000);
 return;
 }
+
 const savedToken = localStorage.getItem('google_fit_token');
 const status = document.getElementById('googleFitStatus');
 const btn = document.getElementById('googleFitBtn');
+
+console.log('Сохранённый токен:', savedToken ? 'ЕСТЬ (длина ' + savedToken.length + ')' : 'НЕТ');
+
 if (savedToken) {
-console.log('🔄 Найден сохранённый токен, пробуем авто-синхронизацию...');
+console.log('🔄 Пробуем авто-синхронизацию с сохранённым токеном...');
 if (status) status.textContent = '🔄 Проверка подключения...';
-tokenClient.requestAccessToken({ prompt: 'none' })
-.then(response => {
-if (response && response.access_token) {
-console.log('✅ Токен обновлён, получаем шаги...');
-fetchStepsFromGoogleFit(response.access_token);
-} else {
-console.log('⚠️ Токен не получен, запрашиваем переподключение');
-handleGoogleFitTokenError();
+
+// Пробуем использовать сохранённый токен напрямую
+fetchStepsFromGoogleFit(savedToken).then(() => {
+console.log('✅ Авто-синхронизация успешна');
+}).catch(err => {
+console.log('⚠️ Сохранённый токен не работает:', err);
+console.log('🔄 Запрашиваем новый токен через consent...');
+// Токен истёк, запрашиваем новый с показом окна согласия
+if (tokenClient) {
+tokenClient.requestAccessToken({ prompt: 'consent' });
 }
-})
-.catch(error => {
-console.error('❌ Ошибка авто-синхронизации:', error);
-handleGoogleFitTokenError();
 });
 } else {
-console.log('ℹ️ Нет сохранённого токена, показываем кнопку подключения');
-if (btn) {
-btn.style.display = 'block';
-btn.textContent = '🔐 Подключить Google Fit';
+console.log('ℹ️ Нет сохранённого токена, показываем кнопку');
+if (btn) { 
+btn.style.display = 'block'; 
+btn.textContent = '🔐 Подключить Google Fit'; 
 }
 if (status) status.textContent = '👆 Нажми для подключения';
 updateGoogleFitProfileStatus();
 }
 }
+
 function handleGoogleFitTokenError() {
+console.log('⚠️ handleGoogleFitTokenError вызван');
 localStorage.removeItem('google_fit_token');
+
 const status = document.getElementById('googleFitStatus');
 const btn = document.getElementById('googleFitBtn');
+
 if (status) {
 status.innerHTML = '⚠️ Требуется переподключение <button onclick="syncWithGoogleFit(true)" style="margin-left: 8px; padding: 4px 10px; background: #4285F4; color: white; border: none; border-radius: 5px; font-size: 0.75em; cursor: pointer; font-weight: 700;">🔗 Подключить</button>';
 }
-if (btn) {
-btn.style.display = 'block';
-btn.textContent = '🔗 Переподключить Google Fit';
-btn.disabled = false;
+if (btn) { 
+btn.style.display = 'block'; 
+btn.textContent = ' Переподключить Google Fit'; 
+btn.disabled = false; 
 }
 updateGoogleFitProfileStatus();
 setTimeout(() => { showToast('⚠️ Google Fit: требуется переподключение'); }, 500);
 }
+
 async function syncWithGoogleFit(force = false) {
-if (!gisLoaded) {
-showToast('⏳ Загрузка Google Fit...');
-return;
+console.log(' syncWithGoogleFit вызван, force=', force);
+console.log('gisLoaded:', gisLoaded);
+console.log('tokenClient:', tokenClient);
+
+if (!gisLoaded) { 
+showToast('⏳ Загрузка Google Fit...'); 
+return; 
 }
+
 const btn = document.getElementById('googleFitBtn');
 const status = document.getElementById('googleFitStatus');
-if (btn) {
-btn.disabled = true;
-btn.textContent = ' Подключение...';
+
+if (btn) { 
+btn.disabled = true; 
+btn.textContent = '⏳ Подключение...'; 
 }
 if (status) status.textContent = '🔄 Подключение...';
-try {
-tokenClient.requestAccessToken({ prompt: force ? 'consent' : 'none' });
+
+try { 
+console.log('🔑 Запрашиваем токен, prompt=', force ? 'consent' : 'none');
+tokenClient.requestAccessToken({ prompt: force ? 'consent' : 'none' }); 
 } catch (error) {
 console.error('❌ Ошибка запроса токена:', error);
-if (btn) {
-btn.disabled = false;
-btn.textContent = '🔐 Подключить Google Fit';
+if (btn) { 
+btn.disabled = false; 
+btn.textContent = '🔐 Подключить Google Fit'; 
 }
-if (status) status.textContent = '⚠️ Ошибка подключения';
+if (status) status.textContent = '️ Ошибка подключения';
 }
 }
+
 async function fetchStepsFromGoogleFit(accessToken) {
-console.log('📊 Запрашиваем шаги из Google Fit...');
+console.log('📊 fetchStepsFromGoogleFit вызван');
+console.log('Длина токена:', accessToken ? accessToken.length : 0);
+
+if (!accessToken) {
+console.error('❌ Токен не передан!');
+throw new Error('Токен не передан');
+}
+
 localStorage.setItem('google_fit_token', accessToken);
+
 const btn = document.getElementById('googleFitBtn');
 const status = document.getElementById('googleFitStatus');
+
 try {
-const today = new Date();
+const today = new Date(); 
 today.setHours(0, 0, 0, 0);
 const now = new Date();
-console.log('📅 Период:', today.toISOString(), '—', now.toISOString());
+
+console.log(' Период запроса:', today.toISOString(), '—', now.toISOString());
+console.log('startTimeMillis:', today.getTime());
+console.log('endTimeMillis:', now.getTime());
+
+// Проверяем, что gapi.client.fitness доступен
+if (!gapi.client || !gapi.client.fitness) {
+console.error('❌ gapi.client.fitness не доступен!');
+throw new Error('Google Fit API не загружен');
+}
+
+console.log(' Отправляем запрос к Google Fit API...');
+
 const response = await gapi.client.fitness.users.dataset.aggregate({
 userId: 'me',
 resource: {
-aggregateBy: [{
+aggregateBy: [{ 
 dataTypeName: 'com.google.step_count.delta',
-dataSourceId: 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps'
+dataSourceId: 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps' 
 }],
 bucketByTime: { durationMillis: 86400000 },
-startTimeMillis: today.getTime(),
+startTimeMillis: today.getTime(), 
 endTimeMillis: now.getTime()
 }
 });
-console.log('📥 Ответ Google Fit:', response);
+
+console.log(' Ответ получен:', response);
+console.log('response.result:', response.result);
+
 let totalSteps = 0;
+
 if (response.result && response.result.bucket) {
-response.result.bucket.forEach(bucket => {
-console.log('📦 Bucket:', bucket);
+console.log('📦 Количество bucket:', response.result.bucket.length);
+response.result.bucket.forEach((bucket, idx) => {
+console.log(`📦 Bucket ${idx}:`, bucket);
 if (bucket.dataset) {
-bucket.dataset.forEach(dataset => {
-console.log('📊 Dataset:', dataset);
+bucket.dataset.forEach((dataset, dIdx) => {
+console.log(`📊 Dataset ${dIdx}:`, dataset);
 if (dataset.point) {
-dataset.point.forEach(point => {
-console.log('📍 Point:', point);
+console.log(`📍 Количество point:`, dataset.point.length);
+dataset.point.forEach((point, pIdx) => {
+console.log(`📍 Point ${pIdx}:`, point);
 if (point.value && point.value[0]) {
 const steps = parseInt(point.value[0].intVal) || 0;
 totalSteps += steps;
-console.log('➕ Добавлено шагов:', steps);
+console.log(`➕ Добавлено шагов: ${steps}, итого: ${totalSteps}`);
 }
 });
 }
 });
 }
 });
+} else {
+console.log('⚠️ response.result или bucket отсутствует');
 }
-console.log(' Всего шагов:', totalSteps);
+
+console.log('👟 ВСЕГО ШАГОВ:', totalSteps);
+
 if (totalSteps > 0) {
 stepsData[getTodayKey()] = totalSteps;
-saveData();
+saveData(); 
 updateAllDisplays();
 showToast(`✅ Синхронизировано: ${totalSteps.toLocaleString('ru-RU')} шагов`);
 if (btn) btn.style.display = 'none';
@@ -1586,27 +1650,33 @@ if (btn) btn.style.display = 'none';
 if (status) status.textContent = '✅ Подключено · Шаги не найдены (попробуй походить)';
 console.log('ℹ️ Шаги не найдены — возможно, нет данных за сегодня');
 }
+
 updateGoogleFitProfileStatus();
+
 } catch (error) {
-console.error(' Ошибка Google Fit:', error);
+console.error('❌ Ошибка Google Fit:', error);
+console.error('error.status:', error.status);
+console.error('error.result:', error.result);
+
 if (error.status === 401 || (error.result && error.result.error && error.result.error.code === 401)) {
-console.log(' Токен истёк (401), запрашиваем переподключение');
+console.log('🔑 Токен истёк (401), запрашиваем переподключение');
 handleGoogleFitTokenError();
 } else if (error.status === 403) {
 console.log('🚫 Нет доступа (403)');
 showToast('⚠️ Нет доступа к Google Fit. Проверь аккаунт.');
-if (status) status.textContent = '⚠️ Нет доступа';
+if (status) status.textContent = '️ Нет доступа';
 } else {
-showToast('️ Ошибка Google Fit: ' + (error.message || 'неизвестно'));
-if (btn) {
-btn.disabled = false;
-btn.textContent = '🔄 Повторить';
-btn.style.display = 'block';
+showToast('⚠️ Ошибка Google Fit: ' + (error.message || 'неизвестно'));
+if (btn) { 
+btn.disabled = false; 
+btn.textContent = '🔄 Повторить'; 
+btn.style.display = 'block'; 
 }
 if (status) status.textContent = '⚠️ Ошибка';
 }
 }
 }
+
 function disconnectGoogleFit() {
 if (!confirm('Отключить Google Fit?\nШаги перестанут синхронизироваться автоматически, но текущие данные сохранятся.')) return;
 localStorage.removeItem('google_fit_token');
@@ -1617,11 +1687,12 @@ const profileBtn = document.getElementById('profileGoogleFitBtn');
 const profileDisconnect = document.getElementById('profileGoogleFitDisconnect');
 if (status) status.textContent = '⚪ Не подключено';
 if (btn) { btn.style.display = 'block'; btn.textContent = '🔐 Подключить Google Fit'; btn.disabled = false; }
-if (profileStatus) { profileStatus.textContent = ' Не подключено'; profileStatus.style.color = '#666'; }
+if (profileStatus) { profileStatus.textContent = '⚪ Не подключено'; profileStatus.style.color = '#666'; }
 if (profileBtn) profileBtn.style.display = 'flex';
 if (profileDisconnect) profileDisconnect.style.display = 'none';
 showToast('✅ Google Fit отключён');
 }
+
 function updateGoogleFitProfileStatus() {
 const token = localStorage.getItem('google_fit_token');
 const profileStatus = document.getElementById('profileGoogleFitStatus');
@@ -1640,6 +1711,7 @@ if (profileBtn) profileBtn.style.display = 'flex';
 if (profileDisconnect) profileDisconnect.style.display = 'none';
 }
 }
+
 function openProfile() {
 document.getElementById('settingsOverlay').classList.add('active');
 document.getElementById('profilePanel').classList.add('active');
@@ -1820,7 +1892,7 @@ const sys = parseInt(parts[0]), dia = parseInt(parts[1]);
 if(sys > 50 && sys < 300 && dia > 30 && dia < 200) { healthData[today].pressure = v; saved = true; }
 else errorMsg = '⚠️ Неверное давление';
 } else errorMsg = '⚠️ Формат: 120/80';
-} else errorMsg = '⚠️ Формат: 120/80';
+} else errorMsg = '️ Формат: 120/80';
 }
 else if(type === 'weight') { const val = parseFloat(v); if(val > 30 && val < 300) { healthData[today].weight = val; profile.weight = val; saved = true; } else errorMsg = '⚠️ 30-300 кг'; }
 else if(type === 'water') { const val = parseInt(v); if(val >= 0 && val <= 10000) { healthData[today].water = val; saved = true; } else errorMsg = '⚠️ 0-10000 мл'; }
@@ -1869,7 +1941,7 @@ document.getElementById('legendCalFact').textContent=tb.toLocaleString('ru-RU');
 document.getElementById('balanceEaten').textContent=eaten;
 document.getElementById('balanceBurned').textContent=tb;
 const diff=tb-eaten, st=document.getElementById('balanceStatus');
-if(diff>0){st.textContent=` Дефицит +${diff}`;st.style.background='rgba(76,175,80,0.3)';}
+if(diff>0){st.textContent=`🎯 Дефицит +${diff}`;st.style.background='rgba(76,175,80,0.3)';}
 else if(diff<0){st.textContent=`⚠️ +${Math.abs(diff)}`;st.style.background='rgba(244,67,54,0.3)';}
 else{st.textContent='⚖️ 0';st.style.background='rgba(255,193,7,0.3)';}
 document.getElementById('totalEatenValue').textContent=eaten.toLocaleString('ru-RU');
@@ -1919,7 +1991,7 @@ return [];
 function initMealForm(type){
 const form=document.getElementById(`form${capitalize(type)}`);
 if(form.innerHTML.trim()==='') {
-form.innerHTML=`<div class="search-container"><input type="text" class="search-input" id="mealSearch-${type}" placeholder="🔍 Поиск блюда..." autocomplete="off"><div class="search-dropdown" id="searchDropdown-${type}"></div></div><div class="meal-form-row"><input type="text" id="mealName-${type}" placeholder="Название"><input type="number" id="mealWeight-${type}" placeholder="Вес (г)" value="200"></div><div class="meal-form-row"><input type="number" id="mealCalPer100-${type}" placeholder="Ккал/100г"><input type="number" id="mealTotalCal-${type}" placeholder="Итого" readonly style="background:#e3f2fd;font-weight:700;"></div><div class="calories-preview" id="caloriesPreview-${type}" style="display:none;"><span id="previewCalc-${type}"></span></div><button class="add-meal-btn" id="addMealBtn-${type}" onclick="addMeal('${type}')" disabled>➕ Добавить</button><div class="manual-toggle" onclick="toggleManualMode('${type}')">✏️ Ввести вручную</div>`;
+form.innerHTML=`<div class="search-container"><input type="text" class="search-input" id="mealSearch-${type}" placeholder="🔍 Поиск блюда..." autocomplete="off"><div class="search-dropdown" id="searchDropdown-${type}"></div></div><div class="meal-form-row"><input type="text" id="mealName-${type}" placeholder="Название"><input type="number" id="mealWeight-${type}" placeholder="Вес (г)" value="200"></div><div class="meal-form-row"><input type="number" id="mealCalPer100-${type}" placeholder="Ккал/100г"><input type="number" id="mealTotalCal-${type}" placeholder="Итого" readonly style="background:#e3f2fd;font-weight:700;"></div><div class="calories-preview" id="caloriesPreview-${type}" style="display:none;"><span id="previewCalc-${type}"></span></div><button class="add-meal-btn" id="addMealBtn-${type}" onclick="addMeal('${type}')" disabled>➕ Добавить</button><div class="manual-toggle" onclick="toggleManualMode('${type}')">️ Ввести вручную</div>`;
 setupMealFormEvents(type);
 }
 }
@@ -1966,7 +2038,7 @@ if(manualMode) document.getElementById(`mealName-${type}`).focus();
 }
 function addMeal(type){
 const name=document.getElementById(`mealName-${type}`).value.trim(), w=parseInt(document.getElementById(`mealWeight-${type}`).value)||200, c=parseInt(document.getElementById(`mealCalPer100-${type}`).value)||0, tc=Math.round((c*w)/100);
-if(!name||tc<=0){showToast('️ Заполни данные');return;}
+if(!name||tc<=0){showToast('⚠️ Заполни данные');return;}
 if(!getFoodDatabase().find(f=>f.name.toLowerCase()===name.toLowerCase())){ customFoods.push({name,calories:c}); saveData(); }
 const today=getTodayKey(), meals=mealsData[today]||[], time=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
 meals.push({id:Date.now(),name,weight:w,calPer100:c,calories:tc,time,mealType:type});
@@ -1991,7 +2063,7 @@ const meals=mealsData[getTodayKey()]||[], grouped={breakfast:[],lunch:[],snack:[
 meals.forEach(m=>{ const t=m.mealType||'breakfast'; if(grouped[t])grouped[t].push(m); });
 ['breakfast','lunch','snack','dinner'].forEach(type=>{
 const list=document.getElementById(`${type}List`), ml=grouped[type], cnt=ml.length, tot=ml.reduce((s,m)=>s+m.calories,0);
-list.innerHTML=ml.length===0?'<div class="empty-meal-content">Пока пусто</div>':ml.map(m=>`<div class="meal-item"><div class="meal-info"><div class="meal-name">${m.name}</div><div class="meal-details">🕐 ${m.time} · ⚖️ ${m.weight}г</div></div><div class="meal-calories">${m.calories} ккал</div><button class="meal-delete" onclick="deleteMeal(${m.id})"></button></div>`).join('');
+list.innerHTML=ml.length===0?'<div class="empty-meal-content">Пока пусто</div>':ml.map(m=>`<div class="meal-item"><div class="meal-info"><div class="meal-name">${m.name}</div><div class="meal-details">🕐 ${m.time} · ⚖️ ${m.weight}г</div></div><div class="meal-calories">${m.calories} ккал</div><button class="meal-delete" onclick="deleteMeal(${m.id})">✕</button></div>`).join('');
 document.getElementById(`${type}Count`).textContent=`${cnt} блюд`;
 document.getElementById(`${type}Calories`).textContent=`${tot} ккал`;
 });
@@ -2111,7 +2183,7 @@ function addMessageToUI(role, content, isHtml = false) {
 const mc = document.getElementById('aiMessages');
 const md = document.createElement('div');
 md.className = `ai-message ${role}`;
-const av = role === 'assistant' ? '🤗' : (profile.avatar ? `<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : '👤');
+const av = role === 'assistant' ? '🤗' : (profile.avatar ? `<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : '');
 md.innerHTML = `<div class="ai-message-avatar">${av}</div><div class="ai-message-bubble">${isHtml ? content : formatAiResponse(content)}</div>`;
 mc.appendChild(md);
 setTimeout(() => { mc.scrollTop = mc.scrollHeight; }, 50);
@@ -2176,7 +2248,7 @@ throw error;
 }
 function sendQuickMessage(msg){ document.getElementById('aiInput').value=msg; sendAiMessage(); }
 window.addEventListener('load', () => {
-console.log(' Приложение загружается...');
+console.log('🚀 Приложение загружается...');
 initGoogleFit();
 restoreActiveWorkout();
 initVoiceRecognition();
